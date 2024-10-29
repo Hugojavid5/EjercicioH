@@ -1,0 +1,1 @@
+Ejercicio que acomparacion con el anterior ,se eliminan los botones de importar y exportar a csv junto con sus funciones.Ahora los datos se cargan a una bbdd de mariadb en docker que nos conectamos como cliente desde mysql worbench pudiendo realizar las funciones de agregar,modificar y eliminar
