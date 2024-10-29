@@ -30,7 +30,7 @@
         <HBox alignment="CENTER" prefHeight="54.0" prefWidth="424.0" spacing="50.0" VBox.vgrow="SOMETIMES">
             <children>
                 <Button fx:id="btt_agregar" mnemonicParsing="false" onAction="#agregar" text="Agregar Persona" />
-                <Button fx:id="btt_modificar" mnemonicParsing="false" onAction="#abrirVentanaModificar" text="Modificar Persona" textAlignment="CENTER" />
+                <Button fx:id="btt_modificar" mnemonicParsing="false" onAction="#agregar" text="Modificar Persona" textAlignment="CENTER" />
                 <Button fx:id="btt_eliminar" mnemonicParsing="false" onAction="#eliminar" text="Eliminar persona" />
             </children>
         </HBox>
