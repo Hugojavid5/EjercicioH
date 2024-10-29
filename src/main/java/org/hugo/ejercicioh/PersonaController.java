@@ -1,5 +1,6 @@
 package org.hugo.ejercicioh;
 
+import Dao.DaoPersonas;
 import Model.Personas;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,6 +16,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Controlador para gestionar la interfaz de la tabla de personas.
@@ -48,7 +51,7 @@ public class PersonaController {
 
     /** Lista observable de personas para mostrar en la tabla */
     private ObservableList<Personas> personasList = FXCollections.observableArrayList();
-
+    private DaoPersonas daoPersona = new DaoPersonas();
     /**
      * Inicializa la tabla y las columnas al cargar la vista.
      * Establece los valores de las columnas para que correspondan a los atributos de la clase Persona.
@@ -61,6 +64,16 @@ public class PersonaController {
 
         // Vincula la lista observable a la tabla
         tablaPersonas.setItems(personasList);
+        cargarPersonasDesdeBD();
+    }
+    private void cargarPersonasDesdeBD() {
+        try {
+            List<Personas> personas = daoPersona.lstPersonas();
+            personasList.setAll(personas); // Actualiza la lista observable con los datos obtenidos
+            tablaPersonas.setItems(personasList); // Asigna la lista a la tabla
+        } catch (SQLException e) {
+            mostrarAlerta("Error", "No se pudieron cargar los datos desde la base de datos: " + e.getMessage());
+        }
     }
 
     /**
@@ -77,7 +90,7 @@ public class PersonaController {
         }
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/hugo/ejerciciof/NuevaPersona.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/hugo/ejercicioh/NuevaPersona.fxml"));
             Parent modalRoot = loader.load();
             NuevaPersonaController modalController = loader.getController();
             modalController.setPersonasList(personasList);
@@ -89,7 +102,7 @@ public class PersonaController {
             modalStage.setTitle("Editar Persona");
             modalStage.setScene(new Scene(modalRoot));
             modalStage.showAndWait();
-
+            cargarPersonasDesdeBD();
             tablaPersonas.refresh();
         } catch (IOException e) {
             e.printStackTrace();
@@ -101,6 +114,7 @@ public class PersonaController {
      * @param event Evento de acción que dispara el método
      * @throws IOException en caso de error al cargar el archivo FXML
      */
+    /*
     @FXML
     void agregar(ActionEvent event) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("NuevaPersona.fxml"));
@@ -120,23 +134,30 @@ public class PersonaController {
         // Refrescar la tabla después de agregar
         tablaPersonas.refresh();
     }
+    */
 
     /**
      * Elimina la persona seleccionada en la tabla.
      * Si no hay ninguna persona seleccionada, muestra una alerta al usuario.
      * @param event Evento de acción que dispara el método
      */
+   /*
     @FXML
     private void eliminar(ActionEvent event) {
         Personas personaSeleccionada = tablaPersonas.getSelectionModel().getSelectedItem();
         if (personaSeleccionada == null) {
             mostrarAlerta("No hay ninguna persona seleccionada", "Por favor, seleccione una persona para eliminar.");
         } else {
-            personasList.remove(personaSeleccionada);
-            mostrarAlerta("Persona eliminada", "La persona ha sido eliminada con éxito.");
+            try {
+                daoPersona.eliminar(personaSeleccionada.getId());
+                personasList.remove(personaSeleccionada); // Actualiza la lista observable eliminando la persona
+                mostrarAlerta("Persona eliminada", "La persona ha sido eliminada con éxito.");
+            } catch (SQLException e) {
+                mostrarAlerta("Error", "No se pudo eliminar la persona: " + e.getMessage());
+            }
         }
     }
-
+    */
     /**
      * Muestra una alerta informativa con un título y un mensaje específico
      * @param titulo  Título de la alerta
@@ -165,104 +186,5 @@ public class PersonaController {
         }
 
         tablaPersonas.setItems(personasFiltradas);
-    }
-    /**
-     * Método que exporta la información de la tabla a un archivo CSV.
-     *
-     * @param actionEvent Evento disparado al hacer clic en el botón de exportar.
-     */
-    public void exportar(ActionEvent actionEvent) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Exportar a CSV");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-
-        File file = fileChooser.showSaveDialog(btt_agregar.getScene().getWindow());
-
-        if (file != null) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                // Escribir cabecera
-                writer.write("Nombre,Apellidos,Edad");
-                writer.newLine();
-
-                // Escribir datos
-                for (Personas persona : personasList) {
-                    writer.write(persona.getNombre() + "," + persona.getApellidos() + "," + persona.getEdad());
-                    writer.newLine();
-                }
-
-                mostrarAlerta("Exportación Exitosa", "Los datos han sido exportados a " + file.getAbsolutePath());
-            } catch (IOException e) {
-                mostrarAlerta("Error de Exportación", "No se pudo exportar el archivo: " + e.getMessage());
-            }
-        }
-    }
-    /**
-     * Método que importa datos de un archivo CSV a la tabla.
-     *
-     * @param actionEvent Evento disparado al hacer clic en el botón de importar.
-     */
-    public void importar(ActionEvent actionEvent) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Importar desde CSV");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-
-        File file = fileChooser.showOpenDialog(btt_agregar.getScene().getWindow());
-
-        if (file != null) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                String line;
-                boolean firstLine = true;
-
-                while ((line = reader.readLine()) != null) {
-                    if (firstLine) {
-                        firstLine = false; // Saltar la primera línea (cabecera)
-                        continue;
-                    }
-
-                    String[] datos = line.split(",");
-
-                    // Validar que haya suficientes datos y que no estén vacíos
-                    if (datos.length == 3) {
-                        String nombre = datos[0].trim();
-                        String apellidos = datos[1].trim();
-                        Integer edad;
-
-                        // Validar que los campos no estén vacíos
-                        if (nombre.isEmpty() || apellidos.isEmpty()) {
-                            mostrarAlerta("Error de Importación", "Los campos Nombre y Apellidos no pueden estar vacíos.");
-                            continue; // Saltar este registro
-                        }
-
-                        // Validar edad
-                        try {
-                            edad = Integer.parseInt(datos[2].trim());
-                        } catch (NumberFormatException e) {
-                            mostrarAlerta("Error de Importación", "La edad debe ser un número: " + datos[2]);
-                            continue; // Saltar este registro
-                        }
-
-                        // Comprobar si la persona ya existe
-                        boolean existe = personasList.stream()
-                                .anyMatch(p -> p.getNombre().equalsIgnoreCase(nombre) && p.getApellidos().equalsIgnoreCase(apellidos) && p.getEdad() == edad);
-
-                        if (!existe) {
-                            personasList.add(new Personas(nombre, apellidos, edad));
-                        } else {
-                            mostrarAlerta("Registro Duplicado", "La persona " + nombre + " " + apellidos + " ya existe.");
-                        }
-                    } else {
-                        mostrarAlerta("Error de Importación", "Línea inválida: " + line);
-                    }
-                }
-
-                mostrarAlerta("Importación Exitosa", "Los datos han sido importados desde " + file.getAbsolutePath());
-            } catch (IOException e) {
-                mostrarAlerta("Error de Importación", "No se pudo importar el archivo: " + e.getMessage());
-            }
-        }
     }
 }

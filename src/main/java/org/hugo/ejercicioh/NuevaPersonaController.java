@@ -1,4 +1,5 @@
 package org.hugo.ejercicioh;
+import Dao.DaoPersonas;
 import Model.Personas;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -27,7 +28,8 @@ public class NuevaPersonaController {
 
     /** Persona seleccionada para edición; null si se está agregando una nueva persona. */
     private Personas personaAEditar;
-
+    private DaoPersonas daoPersona; // Objeto DAO para realizar operaciones de base de datos
+    private boolean esModificacion = false; // Indica si se está modificando una persona existente
     /**
      * Establece la lista observable de personas.
      * @param personasList Lista observable donde se almacenan las personas.
@@ -45,7 +47,7 @@ public class NuevaPersonaController {
         this.personaAEditar = persona;
         if (persona != null) {
             txt_Nombre.setText(persona.getNombre());
-            txt_Apellidos.setText(persona.getApellidos());
+            txt_Apellidos.setText(persona.getApellido());
             txt_Edad.setText(String.valueOf(persona.getEdad()));
         }
     }
@@ -82,7 +84,7 @@ public class NuevaPersonaController {
             if (personaAEditar != null) {
                 // Editar persona existente
                 personaAEditar.setNombre(txt_Nombre.getText());
-                personaAEditar.setApellidos(txt_Apellidos.getText());
+                personaAEditar.setApellido(txt_Apellidos.getText());
                 personaAEditar.setEdad(Integer.parseInt(txt_Edad.getText()));
                 mostrarInfo("Persona editada correctamente");
             } else {

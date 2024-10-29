@@ -15,8 +15,6 @@
             <children>
                 <Label text="Filtrar por nombre:" />
                 <TextField fx:id="txt_filtrar" onAction="#filtrar" />
-                <Button mnemonicParsing="false" onAction="#exportar" text="Exportar" />
-                <Button mnemonicParsing="false" onAction="#importar" text="Importar" />
             </children>
         </HBox>
         <TableView fx:id="tablaPersonas" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="424.0" VBox.vgrow="ALWAYS">
