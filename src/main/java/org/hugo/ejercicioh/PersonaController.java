@@ -17,6 +17,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Controlador para la gestión de personas en la interfaz de usuario.
+ * Proporciona funcionalidades para agregar, modificar, eliminar y filtrar personas.
+ */
 public class PersonaController {
     @FXML
     private TableView<Personas> tablaPersonas;
@@ -45,6 +49,9 @@ public class PersonaController {
     private ObservableList<Personas> personasList = FXCollections.observableArrayList();
     private DaoPersonas daoPersona = new DaoPersonas();
 
+    /**
+     * Inicializa el controlador y carga los datos de personas desde la base de datos.
+     */
     @FXML
     public void initialize() {
         c_nombre.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getNombre()));
@@ -53,6 +60,10 @@ public class PersonaController {
 
         cargarPersonasDesdeBD();
     }
+
+    /**
+     * Carga la lista de personas desde la base de datos y actualiza la tabla.
+     */
     private void cargarPersonasDesdeBD() {
         try {
             List<Personas> personas = daoPersona.lstPersonas();
@@ -62,6 +73,13 @@ public class PersonaController {
             mostrarAlerta("Error", "No se pudieron cargar los datos desde la base de datos: " + e.getMessage());
         }
     }
+
+    /**
+     * Maneja la acción de agregar o modificar una persona.
+     * Abre un modal para ingresar los datos de la persona.
+     *
+     * @param event Evento de acción que desencadena la apertura del modal.
+     */
     @FXML
     private void agregar(ActionEvent event) {
         try {
@@ -96,6 +114,12 @@ public class PersonaController {
             mostrarAlerta("Error", "No se pudo abrir la ventana: " + e.getMessage());
         }
     }
+
+    /**
+     * Maneja la acción de eliminar una persona seleccionada de la tabla.
+     *
+     * @param event Evento de acción que desencadena la eliminación de la persona.
+     */
     @FXML
     private void eliminar(ActionEvent event) {
         Personas personaSeleccionada = tablaPersonas.getSelectionModel().getSelectedItem();
@@ -111,6 +135,13 @@ public class PersonaController {
             }
         }
     }
+
+    /**
+     * Muestra una alerta con un mensaje y título especificado.
+     *
+     * @param titulo  El título de la alerta.
+     * @param mensaje El mensaje a mostrar en la alerta.
+     */
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);
@@ -118,6 +149,10 @@ public class PersonaController {
         alert.setContentText(mensaje);
         alert.showAndWait(); // Muestra la alerta y espera a que el usuario la cierre
     }
+
+    /**
+     * Filtra la lista de personas en la tabla según el texto ingresado en el campo de filtro.
+     */
     public void filtrar() {
         String textoFiltro = txt_filtrar.getText().toLowerCase();
 

@@ -10,7 +10,10 @@ import javafx.stage.Stage;
 
 import java.sql.SQLException;
 
-
+/**
+ * Controlador para la ventana de agregar o editar una persona.
+ * Permite ingresar los datos de una persona y guardarlos en la base de datos.
+ */
 public class NuevaPersonaController {
 
     @FXML
@@ -27,27 +30,51 @@ public class NuevaPersonaController {
     private DaoPersonas daoPersona; // Objeto DAO para realizar operaciones de base de datos
     private boolean esModificacion = false; // Indica si se está modificando una persona existente
 
-
+    /**
+     * Establece la lista de personas a la que se pueden agregar o modificar.
+     *
+     * @param personasList La lista de personas a modificar o agregar.
+     */
     public void setPersonasList(ObservableList<Personas> personasList) {
         this.personasList = personasList;
     }
 
+    /**
+     * Establece el objeto DAO para realizar operaciones en la base de datos.
+     *
+     * @param daoPersona El objeto DaoPersonas a establecer.
+     */
     public void setDaoPersona(DaoPersonas daoPersona) {
         this.daoPersona = daoPersona;
     }
 
+    /**
+     * Establece la persona que se va a editar.
+     * Se habilita el modo de modificación y se rellenan los campos con los datos de la persona.
+     *
+     * @param persona La persona a editar.
+     */
     public void setPersonaAEditar(Personas persona) {
         this.personaAEditar = persona;
         this.esModificacion = true; // Indicador de que se está en modo edición
         rellenarCampos(persona); // Rellenar los campos con los datos de la persona a editar
     }
 
+    /**
+     * Rellena los campos de texto con los datos de la persona a editar.
+     *
+     * @param persona La persona cuyos datos se van a mostrar.
+     */
     public void rellenarCampos(Personas persona) {
         txt_Nombre.setText(persona.getNombre());
         txt_Apellidos.setText(persona.getApellido());
         txt_Edad.setText(String.valueOf(persona.getEdad()));
     }
 
+    /**
+     * Guarda la persona en la base de datos.
+     * Si se está editando, actualiza los datos; si no, agrega una nueva persona.
+     */
     @FXML
     private void guardar() {
         String nombre = txt_Nombre.getText().trim();
@@ -113,7 +140,11 @@ public class NuevaPersonaController {
         cancelar();
     }
 
-
+    /**
+     * Muestra un mensaje de información al usuario.
+     *
+     * @param mensaje El mensaje a mostrar.
+     */
     private void mostrarInformacion(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Éxito");
@@ -122,7 +153,11 @@ public class NuevaPersonaController {
         alert.showAndWait(); // Muestra la alerta y espera a que el usuario la cierre
     }
 
-
+    /**
+     * Muestra un mensaje de error al usuario.
+     *
+     * @param mensaje El mensaje de error a mostrar.
+     */
     private void mostrarError(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error en los datos");
@@ -131,6 +166,9 @@ public class NuevaPersonaController {
         alert.showAndWait(); // Muestra la alerta y espera a que el usuario la cierre
     }
 
+    /**
+     * Cierra la ventana actual.
+     */
     @FXML
     private void cancelar() {
         Stage stage = (Stage) txt_Nombre.getScene().getWindow(); // Obtiene la ventana actual
