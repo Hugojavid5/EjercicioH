@@ -12,10 +12,10 @@ import java.io.IOException;
  * Clase principal de la aplicación JavaFX que inicia la interfaz de usuario.
  * Carga la escena desde un archivo FXML y configura la ventana principal.
  */
-public class HelloApplication extends Application {
+public class AppPersonas extends Application {
 
     /**
-     * Método que se llama al iniciar la aplicación.
+     * Metodo que se llama al iniciar la aplicación.
      * Carga el archivo FXML, configura la escena y muestra la ventana principal.
      *
      * @param stage El escenario principal de la aplicación.
@@ -23,11 +23,12 @@ public class HelloApplication extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("EjercicioH.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(AppPersonas.class.getResource("EjercicioH.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 800, 500);
         Image icon = new Image(getClass().getResourceAsStream("/Imagenes/agenda.png"));
         stage.getIcons().add(icon);
         stage.setMaxWidth(840);
+        stage.setResizable(false);
         stage.setMinWidth(565);
         stage.setMinHeight(325);
         stage.setTitle("Personas");
@@ -36,7 +37,7 @@ public class HelloApplication extends Application {
     }
 
     /**
-     * Método principal que se utiliza para lanzar la aplicación.
+     * Metodo principal que se utiliza para lanzar la aplicación.
      *
      * @param args Argumentos de línea de comandos pasados a la aplicación.
      */

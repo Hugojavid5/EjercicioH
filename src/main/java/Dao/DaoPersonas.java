@@ -1,7 +1,9 @@
 package Dao;
 
-import BBDD.conexionBBDD;
+import BBDD.ConexionBBDD;
 import Model.Personas;
+
+import java.io.FileNotFoundException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +20,11 @@ public class DaoPersonas {
      * @return Una lista de objetos {@link Personas} que representan todas las personas en la base de datos.
      * @throws SQLException Si ocurre un error al acceder a la base de datos.
      */
-    public List<Personas> lstPersonas() throws SQLException {
+    public List<Personas> lstPersonas() throws SQLException, FileNotFoundException {
         List<Personas> personas = new ArrayList<>();
         String query = "SELECT * FROM Persona";
 
-        try (Connection conexion = new conexionBBDD().getConnection();
+        try (Connection conexion = new ConexionBBDD().getConnection();
              Statement statement = conexion.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
 
@@ -45,10 +47,10 @@ public class DaoPersonas {
      * @param persona El objeto {@link Personas} que se va a agregar.
      * @throws SQLException Si ocurre un error al acceder a la base de datos.
      */
-    public void agregar(Personas persona) throws SQLException {
+    public void agregar(Personas persona) throws SQLException, FileNotFoundException {
         String query = "INSERT INTO Persona (nombre, apellidos, edad) VALUES (?, ?, ?)";
 
-        try (Connection conexion = new conexionBBDD().getConnection();
+        try (Connection conexion = new ConexionBBDD().getConnection();
              PreparedStatement statement = conexion.prepareStatement(query)) {
             statement.setString(1, persona.getNombre());
             statement.setString(2, persona.getApellido());
@@ -63,10 +65,10 @@ public class DaoPersonas {
      * @param persona El objeto {@link Personas} que contiene los datos actualizados.
      * @throws SQLException Si ocurre un error al acceder a la base de datos.
      */
-    public void modificar(Personas persona) throws SQLException {
+    public void modificar(Personas persona) throws SQLException, FileNotFoundException {
         String query = "UPDATE Persona SET nombre = ?, apellidos = ?, edad = ? WHERE id = ?";
 
-        try (Connection conexion = new conexionBBDD().getConnection();
+        try (Connection conexion = new ConexionBBDD().getConnection();
              PreparedStatement statement = conexion.prepareStatement(query)) {
             statement.setString(1, persona.getNombre());
             statement.setString(2, persona.getApellido());
@@ -85,10 +87,12 @@ public class DaoPersonas {
     public void eliminar(int id) throws SQLException {
         String query = "DELETE FROM Persona WHERE id = ?";
 
-        try (Connection conexion = new conexionBBDD().getConnection();
+        try (Connection conexion = new ConexionBBDD().getConnection();
              PreparedStatement statement = conexion.prepareStatement(query)) {
             statement.setInt(1, id);
             statement.executeUpdate();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 }

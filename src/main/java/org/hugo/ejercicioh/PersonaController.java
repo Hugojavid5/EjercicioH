@@ -13,6 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import Model.Personas;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -69,7 +70,7 @@ public class PersonaController {
             List<Personas> personas = daoPersona.lstPersonas();
             personasList.setAll(personas); // Actualiza la lista observable con los datos obtenidos
             tablaPersonas.setItems(personasList); // Asigna la lista a la tabla
-        } catch (SQLException e) {
+        } catch (SQLException | FileNotFoundException e) {
             mostrarAlerta("Error", "No se pudieron cargar los datos desde la base de datos: " + e.getMessage());
         }
     }

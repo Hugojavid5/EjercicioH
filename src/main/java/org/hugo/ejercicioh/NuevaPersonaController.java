@@ -8,6 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 
 /**
@@ -132,7 +133,7 @@ public class NuevaPersonaController {
                 personasList.add(nuevaPersona);
                 mostrarInformacion("Persona agregada con éxito.");
             }
-        } catch (SQLException e) {
+        } catch (SQLException | FileNotFoundException e) {
             mostrarError("Error al interactuar con la base de datos: " + e.getMessage());
         }
 
